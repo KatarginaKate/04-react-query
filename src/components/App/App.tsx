@@ -1,8 +1,21 @@
+// --- FIX for Vite 8 + react-paginate ---
+import ReactPaginateModule from "react-paginate";
+import type { ReactPaginateProps } from "react-paginate";
+import type { ComponentType } from "react";
+
+type ModuleWithDefault<T> = { default: T };
+
+const ReactPaginate = (
+  ReactPaginateModule as unknown as ModuleWithDefault<
+    ComponentType<ReactPaginateProps>
+  >
+).default;
+// --- END FIX ---
+
+
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
-import ReactPaginate from 'react-paginate';
-
 
 import SearchBar from '../SearchBar/SearchBar';
 import MovieGrid from '../MovieGrid/MovieGrid';
@@ -41,8 +54,6 @@ export default function App() {
     }
   }, [movies.length, query, isLoading, isError]);
 
-  console.log("ReactPaginate =", ReactPaginate);
-
   return (
     <>
       <Toaster position="top-right" />
@@ -54,7 +65,6 @@ export default function App() {
 
       {!isLoading && !isError && movies.length > 0 && (
         <>
-          <MovieGrid movies={movies} onSelect={setSelectedMovie} />
 
           {totalPages > 1 && (
             <ReactPaginate
@@ -69,6 +79,7 @@ export default function App() {
               previousLabel="←"
             />
           )}
+          <MovieGrid movies={movies} onSelect={setSelectedMovie} />
         </>
       )}
 
